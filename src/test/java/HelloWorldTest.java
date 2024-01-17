@@ -92,4 +92,20 @@ public class HelloWorldTest {
         System.out.println(answer);
 
     }
+
+    @Test
+    public void testEx6() {
+
+        Response responseRedirect = RestAssured
+                .given()
+                .redirects()
+                .follow(false)
+                .when()
+                .get("https://playground.learnqa.ru/api/long_redirect")
+                .andReturn();
+
+        String locationHeader = responseRedirect.getHeader("Location");
+        System.out.println(locationHeader);
+
+    }
 }
