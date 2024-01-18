@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class HelloWorldTest {
 
@@ -137,6 +138,64 @@ public class HelloWorldTest {
         System.out.println("Количетво редиректов = " + count);
 
 
+    }
+
+    @Test
+    public void testEx8() throws InterruptedException {
+        JsonPath responseLongTimeJob = RestAssured
+                .given()
+                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
+                .jsonPath();
+
+        responseLongTimeJob.prettyPrint();
+
+        String token = responseLongTimeJob.get("token");
+        int seconds = responseLongTimeJob.get("seconds");
+
+        System.out.println(token + " " + seconds);
+
+        Map<String, String> data = new HashMap<>();
+        data.put("token", token);
+
+        JsonPath responseLongTimeJob2 = RestAssured
+                .given()
+                .queryParams(data)
+                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
+                .jsonPath();
+
+        responseLongTimeJob2.prettyPrint();
+
+
+        String statusEr = responseLongTimeJob2.get("status");
+        if (Objects.equals(statusEr, "Job is NOT ready")) {
+            System.out.println("Значение параметра status равно ожидаемому 'Job is NOT ready'");
+        } else {
+            System.out.println("Значение параметра status не соответсвует ожидаемому 'Job is ready': " + statusEr);
+        }
+
+        Thread.sleep(seconds * 1000L);
+
+        JsonPath responseLongTimeJob3 = RestAssured
+                .given()
+                .queryParams(data)
+                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
+                .jsonPath();
+
+        responseLongTimeJob3.prettyPrint();
+
+
+        String status = responseLongTimeJob3.get("status");
+        if (Objects.equals(status, "Job is ready")) {
+            System.out.println("Значение параметра status равно ожидаемому 'Job is ready'");
+        } else {
+            System.out.println("Значение параметра status не соответсвует ожидаемому 'Job is ready': " + status);
+        }
+        String result = responseLongTimeJob3.get("result");
+        if (result == null) {
+            System.out.println("Параметр 'result' отсутвует");
+        } else {
+            System.out.println("Параметр 'result' = " + result);
+        }
     }
 
 }
