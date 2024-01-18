@@ -134,7 +134,7 @@ public class HelloWorldTest {
         }
 
         while (statusCode == 301);
-        System.out.println("Колличетво редиректов = " + count);
+        System.out.println("Количетво редиректов = " + count);
 
 
     }
