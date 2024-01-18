@@ -1,7 +1,6 @@
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import io.restassured.http.Headers;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -66,7 +65,7 @@ public class HelloWorldTest {
         String responseCookie = responseForGet.getCookie("auth_cookie");
 
         Map<String, String> cookies = new HashMap<>();
-        if (responseCookie != null){
+        if (responseCookie != null) {
             cookies.put("auth_cookie", responseCookie);
         }
 
@@ -108,4 +107,36 @@ public class HelloWorldTest {
         System.out.println(locationHeader);
 
     }
+
+
+    @Test
+    public void testEx7() {
+        String URL = "https://playground.learnqa.ru/api/long_redirect";
+        int count = 0;
+        int statusCode;
+
+        do {
+            Response responseRedirect = RestAssured
+                    .given()
+                    .redirects()
+                    .follow(false)
+                    .when()
+                    .get(URL)
+                    .andReturn();
+
+            String locationHeader = responseRedirect.getHeader("Location");
+
+            statusCode = responseRedirect.getStatusCode();
+
+            URL = locationHeader;
+            count++;
+            System.out.println("URL № " + count + " : " + locationHeader);
+        }
+
+        while (statusCode == 301);
+        System.out.println("Колличетво редиректов = " + count);
+
+
+    }
+
 }
