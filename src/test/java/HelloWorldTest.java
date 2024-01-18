@@ -3,6 +3,7 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -195,6 +196,60 @@ public class HelloWorldTest {
             System.out.println("Параметр 'result' отсутвует");
         } else {
             System.out.println("Параметр 'result' = " + result);
+        }
+    }
+
+    @Test
+    public void testEx9() {
+        String[] passwords_list = {"password", "123456", "12345678", "qwerty", "abc123", "monkey", "1234567", "letmein", "trustno1",
+                "dragon", "baseball", "111111", "iloveyou", "master", "sunshine", "ashley", "bailey", "passw0rd",
+                "shadow", "123123", "654321", "superman", "qazwsx", "michael", "Football", "welcome", "jesus",
+                "ninja", "mustang", "password1", "123456789", "adobe123", "admin", "1234567890", "photoshop",
+                "1234", "12345", "princess", "azerty", "0000000", "access", "696969", "batman", "1qaz2wsx", "login",
+                "qwertyuiop", "solo", "starwars", "121212", "flower", "hottie", "loveme", "zaq1zaq1", "hello",
+                "freedom", "whatever", "666666", "!@#$%^&*", "charlie", "aa123456", "donald", "qwerty123",
+                "1q2w3e4r", "555555", "lovely", "7777777", "888888", "123qwe"};
+
+
+        String url1 = "https://playground.learnqa.ru/ajax/api/get_secret_password_homework";
+        String url2 = "https://playground.learnqa.ru/ajax/api/check_auth_cookie";
+
+        for (int i = 0; i < passwords_list.length; i++) {
+            String password = passwords_list[i];
+
+            Map<String, String> data = new HashMap<>();
+            data.put("login", "super_admin");
+            data.put("password", password);
+            Response responseSecret = RestAssured
+                    .given()
+                    .body(data)
+                    .when()
+                    .post(url1)
+                    .andReturn();
+
+            String responseCookie = responseSecret.getCookie("auth_cookie");
+
+            Map<String, String> cookies = new HashMap<>();
+            if (responseCookie != null) {
+                cookies.put("auth_cookie", responseCookie);
+            }
+
+            Response responseForCheck = RestAssured
+                    .given()
+                    .body(data)
+                    .cookies(cookies)
+                    .when()
+                    .post(url2)
+                    .andReturn();
+
+
+            String key = responseForCheck.print();
+            if (Objects.equals(key, "You are NOT authorized")) {
+                System.out.println("Пароль " + password + " не верный");
+            } else {
+                System.out.println("Правильный пароль " + password);
+                break;
+            }
         }
     }
 
