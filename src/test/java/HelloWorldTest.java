@@ -2,11 +2,16 @@ import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HelloWorldTest {
 
@@ -252,5 +257,61 @@ public class HelloWorldTest {
             }
         }
     }
+
+    @Test
+    public void ex31200() {
+        Response response = RestAssured
+                .get("https://playground.learnqa.ru/ajax/api/map")
+                .andReturn();
+        assertEquals(200, response.statusCode(), "Неожиданный статус код");
+    }
+
+    @Test
+    public void ex31404() {
+        Response response = RestAssured
+                .get("https://playground.learnqa.ru/ajax/api/map1")
+                .andReturn();
+        assertEquals(404, response.statusCode(), "Неожиданный статус код");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "John", "Pete"})
+    public void testHelloMethodWithoutName(String name) {
+        Map<String, String> queryParams = new HashMap<>();
+
+        if(name.length() > 0){
+            queryParams.put("name", name);
+        }
+
+        JsonPath response = RestAssured
+                .given()
+                .queryParams(queryParams)
+                .get("https://playground.learnqa.ru/ajax/api/hello")
+                .jsonPath();
+        String answer = response.getString("answer");
+        String expectedName = (name.length() > 0) ? name : "someone";
+        assertEquals("Hello, " + expectedName, answer, "The answer in not expected");
+    }
+
+    @Test
+    public void testHelloMethodWithName() {
+        String name = "Username";
+
+        JsonPath response = RestAssured
+                .given()
+                .queryParam("name", name)
+                .get("https://playground.learnqa.ru/ajax/api/hello")
+                .jsonPath();
+        String answer = response.getString("answer");
+        assertEquals("Hello, " + name, answer, "The answer in not expected");
+    }
+
+    @Test
+    public void testLengthString() {
+        String name = ("qwertyuiop[]asg");
+              assertTrue(name.length() <= 15, "Длинна строки больше 15 символов");
+
+    }
+
 
 }
