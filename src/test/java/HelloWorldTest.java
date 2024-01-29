@@ -306,7 +306,11 @@ public class HelloWorldTest {
         assertEquals("Hello, " + name, answer, "The answer in not expected");
     }
 
-
+    @Test
+    public void testLengthString() {
+        String name = ("qwertyuiop[]asg");
+        assertTrue(name.length() <= 15, "Длинна строки больше 15 символов");
+    }
 
 
 }
