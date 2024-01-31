@@ -9,13 +9,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class HomeworkHeaderTest {
     @Test
     public void homeworkHeaderTest() {
-        Response responseHomeworkCookie = RestAssured
+        Response responseHomeworkHeader = RestAssured
                 .given()
                 .get("https://playground.learnqa.ru/api/homework_header")
                 .andReturn();
 
-        System.out.println(responseHomeworkCookie.getHeader("x-secret-homework-header"));
-        String cookie = responseHomeworkCookie.getHeader("x-secret-homework-header");
+        System.out.println(responseHomeworkHeader.getHeader("x-secret-homework-header"));
+        String cookie = responseHomeworkHeader.getHeader("x-secret-homework-header");
         assertEquals("Some secret value", cookie, "Ответ не соответсвует ожиданиям " + cookie);
     }
 }
