@@ -15,7 +15,7 @@ public class HomeworkHeaderTest {
                 .andReturn();
 
         System.out.println(responseHomeworkHeader.getHeader("x-secret-homework-header"));
-        String cookie = responseHomeworkHeader.getHeader("x-secret-homework-header");
-        assertEquals("Some secret value", cookie, "Ответ не соответсвует ожиданиям " + cookie);
+        String header = responseHomeworkHeader.getHeader("x-secret-homework-header");
+        assertEquals("Some secret value", header, "Ответ не соответсвует ожиданиям " + header);
     }
 }
