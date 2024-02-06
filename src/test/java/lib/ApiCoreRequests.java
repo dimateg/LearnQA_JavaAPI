@@ -3,6 +3,7 @@ package lib;
 import io.qameta.allure.Step;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.Header;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 
 import java.util.Map;
@@ -47,6 +48,15 @@ public class ApiCoreRequests {
                 .andReturn();
     }
 
+    @Step("Make a POST-request JsonPath")
+    public JsonPath makePostJsonPath(String url, Map<String, String> authData) {
+        return given()
+                .filter(new AllureRestAssured())
+                .body(authData)
+                .post(url)
+                .jsonPath();
+    }
+
     @Step("Make a POST-request create user")
     public Response makePostRequestCreateUser(String url, Map<String, String> userData) {
         return given()
@@ -72,6 +82,26 @@ public class ApiCoreRequests {
                 .header(new Header("x-csrf-token", token))
                 .cookie("auth_sid", cookie)
                 .get(url + userId)
+                .andReturn();
+    }
+
+    @Step("Make a put-request with token and auth cookie edit user with userId")
+    public Response makePutRequestEditUserWithTokenCookie(String url, String token, String cookie, int userId, Map<String, String> editData) {
+        return given()
+                .filter(new AllureRestAssured())
+                .header(new Header("x-csrf-token", token))
+                .cookie("auth_sid", cookie)
+                .body(editData)
+                .put(url + userId)
+                .andReturn();
+    }
+
+    @Step("Make a put-request get user with userId")
+    public Response makePutRequestEditUser(String url, int userId, Map<String, String> editData) {
+        return given()
+                .filter(new AllureRestAssured())
+                .body(editData)
+                .put(url + userId)
                 .andReturn();
     }
 }
